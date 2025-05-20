@@ -11,6 +11,7 @@ st.title("Dashboard de Obras por Municipio - Michoacán es Mejor")
 # Cargar datos desde Google Sheets
 sheet_url = "https://docs.google.com/spreadsheets/d/1fHtIMMQJd6LkDuDgFJGacxe4FTJL8r6Egy4CWeyu0y0/export?format=csv&id=1fHtIMMQJd6LkDuDgFJGacxe4FTJL8r6Egy4CWeyu0y0"
 df = pd.read_csv(sheet_url)
+st.write("Columnas disponibles:", df.columns.tolist())
 
 # Normalizar columnas
 df.columns = [col.strip() for col in df.columns]
