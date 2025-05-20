@@ -24,7 +24,8 @@ df_mun = df[df['Municipio'] == municipio]
 
 # Resumen
 num_obras = df_mun.shape[0]
-total_inversion = df_mun['Monto Contratado'].sum()
+df_mun['Monto Total'] = pd.to_numeric(df_mun['Monto Total'], errors='coerce')
+total_inversion = df_mun['Monto Total'].sum()
 
 st.subheader(f"Resumen de {municipio}")
 st.write(f"**Número de obras:** {num_obras}")
