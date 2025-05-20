@@ -25,9 +25,14 @@ municipio = st.selectbox("Selecciona un municipio", sorted(municipios))
 df_mun = df[df['Municipio'] == municipio]
 
 # Buscar automáticamente la columna de inversión
-col_monto = [col for col in df.columns if "monto" in col.lower()][0]
-df_mun[col_monto] = pd.to_numeric(df_mun[col_monto], errors='coerce')
-total_inversion = df_mun[col_monto].sum()
+col_monto_candidates = [col for col in df.columns if "monto" in col.lower()]
+if col_monto_candidates:
+    col_monto = col_monto_candidates[0]
+    df_mun[col_monto] = pd.to_numeric(df_mun[col_monto], errors='coerce')
+    total_inversion = df_mun[col_monto].sum()
+else:
+    st.warning("⚠️ No se encontró ninguna columna que contenga 'monto'. Revisa tu hoja de cálculo.")
+    total_inversion = 0
 
 # Resumen
 num_obras = df_mun.shape[0]
