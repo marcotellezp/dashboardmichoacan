@@ -40,35 +40,35 @@ else:
     total_inversion = 0
 
 # Desglose por programa
-desglose_text = ""
+desglose_text = []
 if 'Programa' in df_mun.columns:
     desglose = df_mun.groupby('Programa')[col_monto].agg(['count', 'sum']).reset_index()
     for _, row in desglose.iterrows():
         programa = row['Programa']
         obras = int(row['count'])
         monto = row['sum']
-        desglose_text += f"{programa}: {obras} obra{'s' if obras != 1 else ''} ${monto:,.2f}\n"
+        desglose_text.append(f"{programa}: {obras} obra{'s' if obras != 1 else ''} ${monto:,.2f}")
 
 # Mostrar resumen en app
 st.subheader(f"Resumen de {municipio}")
 st.write(f"**Número de obras:** {df_mun.shape[0]}")
 st.write(f"**Total de inversión:** ${total_inversion:,.2f}")
 st.markdown("**Desglose por programa:**")
-st.text(desglose_text)
+for linea in desglose_text:
+    st.write(linea)
 
 # PDF generator
 def generar_pdf(data, municipio, desglose_text, total_inversion):
     pdf = FPDF()
     pdf.add_page()
-    pdf.set_font("Arial", "B", 14)
+    pdf.set_font("Arial", "B", 16)
     pdf.cell(200, 10, f"Resumen de {municipio}", ln=True, align='L')
 
     pdf.set_font("Arial", "", 12)
     pdf.cell(200, 8, f"Número de obras: {data.shape[0]}", ln=True)
     pdf.cell(200, 8, f"Total de inversión: ${total_inversion:,.2f}", ln=True)
     pdf.cell(200, 8, "Desglose por programa:", ln=True)
-
-    for linea in desglose_text.strip().split("\n"):
+    for linea in desglose_text:
         pdf.cell(200, 8, linea, ln=True)
 
     pdf.ln(5)
