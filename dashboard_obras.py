@@ -1,3 +1,4 @@
+
 import streamlit as st
 import pandas as pd
 from fpdf import FPDF
@@ -25,7 +26,6 @@ col_monto_candidates = [col for col in df.columns if "monto" in col.lower()]
 if col_monto_candidates:
     col_monto = col_monto_candidates[0]
 
-    # Limpieza robusta de datos
     try:
         df_mun[col_monto] = (
             df_mun[col_monto]
@@ -47,6 +47,16 @@ num_obras = df_mun.shape[0]
 st.subheader(f"Resumen de {municipio}")
 st.write(f"**Número de obras:** {num_obras}")
 st.write(f"**Total de inversión:** ${total_inversion:,.2f}")
+
+# Desglose por programa
+st.markdown("**Desglose por programa:**")
+if 'Programa' in df_mun.columns:
+    desglose = df_mun.groupby('Programa')[col_monto].agg(['count', 'sum']).reset_index()
+    for _, row in desglose.iterrows():
+        programa = row['Programa']
+        obras = int(row['count'])
+        monto = row['sum']
+        st.write(f"{programa}: {obras} obras ${monto:,.2f}")
 
 # Fichas por obra
 st.subheader("Obras en el municipio")
