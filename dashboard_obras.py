@@ -12,22 +12,22 @@ st.title("Dashboard de Obras por Municipio - Michoacán es Mejor")
 # Cargar datos desde Google Sheets
 sheet_url = "https://docs.google.com/spreadsheets/d/1fHtIMMQJd6LkDuDgFJGacxe4FTJL8r6Egy4CWeyu0y0/export?format=csv&id=1fHtIMMQJd6LkDuDgFJGacxe4FTJL8r6Egy4CWeyu0y0"
 df = pd.read_csv(sheet_url)
-df.columns = [col.strip() for col in df.columns]
 
-# Mostrar columnas para depuración (puedes comentar esta línea después)
-st.write("Columnas disponibles:", df.columns.tolist())
+# Normalizar nombres de columna
+df.columns = df.columns.str.strip()
+
+# Mostrar columnas exactas para depuración
+st.write("Columnas exactas:", [repr(col) for col in df.columns])
 
 # Selector de municipio
 municipios = df['Municipio'].dropna().unique()
 municipio = st.selectbox("Selecciona un municipio", sorted(municipios))
 df_mun = df[df['Municipio'] == municipio]
 
-# Asegurar que 'Monto Contratado' sea numérico
-if 'Monto Contratado' in df_mun.columns:
-    df_mun['Monto Contratado'] = pd.to_numeric(df_mun['Monto Contratado'], errors='coerce')
-    total_inversion = df_mun['Monto Contratado'].sum()
-else:
-    total_inversion = 0
+# Buscar automáticamente la columna de inversión
+col_monto = [col for col in df.columns if "monto" in col.lower()][0]
+df_mun[col_monto] = pd.to_numeric(df_mun[col_monto], errors='coerce')
+total_inversion = df_mun[col_monto].sum()
 
 # Resumen
 num_obras = df_mun.shape[0]
