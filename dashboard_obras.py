@@ -16,9 +16,6 @@ df = pd.read_csv(sheet_url)
 # Normalizar nombres de columna
 df.columns = df.columns.str.strip()
 
-# Mostrar columnas exactas para depuración
-st.write("Columnas exactas:", [repr(col) for col in df.columns])
-
 # Selector de municipio
 municipios = df['Municipio'].dropna().unique()
 municipio = st.selectbox("Selecciona un municipio", sorted(municipios))
