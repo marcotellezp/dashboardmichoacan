@@ -25,7 +25,12 @@ df_mun = df[df['Municipio'] == municipio]
 col_monto_candidates = [col for col in df.columns if "monto" in col.lower()]
 if col_monto_candidates:
     col_monto = col_monto_candidates[0]
-    df_mun[col_monto] = pd.to_numeric(df_mun[col_monto], errors='coerce')
+    df_mun[col_monto] = (
+    df_mun[col_monto]
+    .astype(str)
+    .str.replace(r"[^0-9.]", "", regex=True)  # quitar $ , espacios, etc.
+    .astype(float)
+)
     total_inversion = df_mun[col_monto].sum()
 else:
     st.warning("⚠️ No se encontró ninguna columna que contenga 'monto'. Revisa tu hoja de cálculo.")
