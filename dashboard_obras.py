@@ -1,4 +1,3 @@
-
 import streamlit as st
 import pandas as pd
 from fpdf import FPDF
@@ -25,13 +24,20 @@ df_mun = df[df['Municipio'] == municipio]
 col_monto_candidates = [col for col in df.columns if "monto" in col.lower()]
 if col_monto_candidates:
     col_monto = col_monto_candidates[0]
-    df_mun[col_monto] = (
-    df_mun[col_monto]
-    .astype(str)
-    .str.replace(r"[^0-9.]", "", regex=True)  # quitar $ , espacios, etc.
-    .astype(float)
-)
-    total_inversion = df_mun[col_monto].sum()
+
+    # Limpieza robusta de datos
+    try:
+        df_mun[col_monto] = (
+            df_mun[col_monto]
+            .astype(str)
+            .str.replace(r"[^\d.]", "", regex=True)
+            .replace("", "0")
+            .astype(float)
+        )
+        total_inversion = df_mun[col_monto].sum()
+    except Exception as e:
+        st.error(f"No se pudo calcular la inversión: {e}")
+        total_inversion = 0
 else:
     st.warning("⚠️ No se encontró ninguna columna que contenga 'monto'. Revisa tu hoja de cálculo.")
     total_inversion = 0
