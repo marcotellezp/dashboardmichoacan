@@ -1,3 +1,4 @@
+
 import streamlit as st
 import pandas as pd
 from fpdf import FPDF
@@ -11,23 +12,25 @@ st.title("Dashboard de Obras por Municipio - Michoacán es Mejor")
 # Cargar datos desde Google Sheets
 sheet_url = "https://docs.google.com/spreadsheets/d/1fHtIMMQJd6LkDuDgFJGacxe4FTJL8r6Egy4CWeyu0y0/export?format=csv&id=1fHtIMMQJd6LkDuDgFJGacxe4FTJL8r6Egy4CWeyu0y0"
 df = pd.read_csv(sheet_url)
-st.write("Columnas disponibles:", df.columns.tolist())
-
-# Normalizar columnas
 df.columns = [col.strip() for col in df.columns]
 
-# Control único de municipio
+# Mostrar columnas para depuración (puedes comentar esta línea después)
+st.write("Columnas disponibles:", df.columns.tolist())
+
+# Selector de municipio
 municipios = df['Municipio'].dropna().unique()
 municipio = st.selectbox("Selecciona un municipio", sorted(municipios))
-
-# Filtrar por municipio
 df_mun = df[df['Municipio'] == municipio]
+
+# Asegurar que 'Monto Contratado' sea numérico
+if 'Monto Contratado' in df_mun.columns:
+    df_mun['Monto Contratado'] = pd.to_numeric(df_mun['Monto Contratado'], errors='coerce')
+    total_inversion = df_mun['Monto Contratado'].sum()
+else:
+    total_inversion = 0
 
 # Resumen
 num_obras = df_mun.shape[0]
-df_mun['Monto Total'] = pd.to_numeric(df_mun['Monto Total'], errors='coerce')
-total_inversion = df_mun['Monto Total'].sum()
-
 st.subheader(f"Resumen de {municipio}")
 st.write(f"**Número de obras:** {num_obras}")
 st.write(f"**Total de inversión:** ${total_inversion:,.2f}")
@@ -37,9 +40,9 @@ st.subheader("Obras en el municipio")
 for i, row in df_mun.iterrows():
     color = "#F8F8F8" if i % 2 == 0 else "#EDE7F6"
     with st.container():
-        st.markdown(f"""
+        st.markdown(f'''
         <div style='background-color:{color}; padding:15px; border-radius:10px;'>
-        <b>Nombre del plantel:</b> {row['Nombre del plantel']}<br>
+        <b>Nombre del plantel:</b> {row['Nombre del Plantel']}<br>
         <b>CCT:</b> {row['CCT']}<br>
         <b>Localidad:</b> {row['Localidad']}<br>
         <b>Programa:</b> {row['Programa']}<br>
@@ -48,11 +51,11 @@ for i, row in df_mun.iterrows():
         <b>Nivel:</b> {row['Nivel']}<br>
         <b>Modalidad:</b> {row['Modalidad']}<br>
         <b>Matrícula:</b> {row['Matrícula']} alumnos<br>
-        <b>Avance físico:</b> {row['Avance físico']}<br>
+        <b>Avance físico:</b> {row['Avance Fisico']}<br>
         <b>Observaciones:</b> {row['Observaciones']}<br>
         <b>Latitud / Longitud:</b> {row['Latitud']} / {row['Longitud']}
         </div><br>
-        """, unsafe_allow_html=True)
+        ''', unsafe_allow_html=True)
 
 # PDF generator
 def generar_pdf(data, municipio):
@@ -64,7 +67,7 @@ def generar_pdf(data, municipio):
 
     for i, row in data.iterrows():
         pdf.multi_cell(0, 10, f'''
-Nombre del Plantel: {row['Nombre del plantel']}
+Nombre del Plantel: {row['Nombre del Plantel']}
 CCT: {row['CCT']}
 Localidad: {row['Localidad']}
 Programa: {row['Programa']}
@@ -73,7 +76,7 @@ Tipo: {row['Tipo']}
 Nivel: {row['Nivel']}
 Modalidad: {row['Modalidad']}
 Matrícula: {row['Matrícula']} alumnos
-Avance físico: {row['Avance físico']}
+Avance físico: {row['Avance Fisico']}
 Observaciones: {row['Observaciones']}
 Latitud: {row['Latitud']}
 Longitud: {row['Longitud']}
