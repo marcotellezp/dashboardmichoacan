@@ -1,4 +1,3 @@
-
 import streamlit as st
 import pandas as pd
 from fpdf import FPDF
@@ -36,31 +35,22 @@ st.subheader("Obras en el municipio")
 for i, row in df_mun.iterrows():
     color = "#F8F8F8" if i % 2 == 0 else "#EDE7F6"
     with st.container():
-        st.markdown(f"<div style='background-color:{color}; padding:15px; border-radius:10px;'>", unsafe_allow_html=True)
-        st.markdown(f"**Nombre del plantel:** {row['Nombre del plantel']}  
-"
-                    f"**CCT:** {row['CCT']}  
-"
-                    f"**Localidad:** {row['Localidad']}  
-"
-                    f"**Programa:** {row['Programa']}  
-"
-                    f"**Descripción de la obra:** {row['Descripción de la obra']}  
-"
-                    f"**Tipo:** {row['Tipo']}  
-"
-                    f"**Nivel:** {row['Nivel']}  
-"
-                    f"**Modalidad:** {row['Modalidad']}  
-"
-                    f"**Matrícula:** {row['Matrícula']} alumnos  
-"
-                    f"**Avance físico:** {row['Avance físico']}  
-"
-                    f"**Observaciones:** {row['Observaciones']}  
-"
-                    f"**Latitud / Longitud:** {row['Latitud']} / {row['Longitud']}")
-        st.markdown("</div><br>", unsafe_allow_html=True)
+        st.markdown(f"""
+        <div style='background-color:{color}; padding:15px; border-radius:10px;'>
+        <b>Nombre del plantel:</b> {row['Nombre del plantel']}<br>
+        <b>CCT:</b> {row['CCT']}<br>
+        <b>Localidad:</b> {row['Localidad']}<br>
+        <b>Programa:</b> {row['Programa']}<br>
+        <b>Descripción de la obra:</b> {row['Descripción de la obra']}<br>
+        <b>Tipo:</b> {row['Tipo']}<br>
+        <b>Nivel:</b> {row['Nivel']}<br>
+        <b>Modalidad:</b> {row['Modalidad']}<br>
+        <b>Matrícula:</b> {row['Matrícula']} alumnos<br>
+        <b>Avance físico:</b> {row['Avance físico']}<br>
+        <b>Observaciones:</b> {row['Observaciones']}<br>
+        <b>Latitud / Longitud:</b> {row['Latitud']} / {row['Longitud']}
+        </div><br>
+        """, unsafe_allow_html=True)
 
 # PDF generator
 def generar_pdf(data, municipio):
