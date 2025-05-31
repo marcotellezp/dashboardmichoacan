@@ -79,30 +79,18 @@ def generar_pdf(data, municipio, desglose_text, total_inversion):
     for i, row in data.iterrows():
         monto_individual = row[col_monto] if col_monto in row else 0
         contenido = (
-            f"Nombre del Plantel: {row['Nombre del Plantel']}
-"
-            f"CCT: {row['CCT']}
-"
-            f"Localidad: {row['Localidad']}
-"
-            f"Programa: {row['Programa']}
-"
-            f"Inversión estimada: ${monto_individual:,.2f}
-"
-            f"Descripción de la obra: {row['Descripción de la obra']}
-"
-            f"Tipo: {row['Tipo']}
-"
-            f"Nivel: {row['Nivel']}
-"
-            f"Modalidad: {row['Modalidad']}
-"
-            f"Matrícula: {row['Matrícula']} alumnos
-"
-            f"Avance físico: {row['Avance Fisico']}
-"
-            f"Observaciones: {row['Observaciones']}
-"
+            f"Nombre del Plantel: {row['Nombre del Plantel']}\n"
+            f"CCT: {row['CCT']}\n"
+            f"Localidad: {row['Localidad']}\n"
+            f"Programa: {row['Programa']}\n"
+            f"Inversión estimada: ${monto_individual:,.2f}\n"
+            f"Descripción de la obra: {row['Descripción de la obra']}\n"
+            f"Tipo: {row['Tipo']}\n"
+            f"Nivel: {row['Nivel']}\n"
+            f"Modalidad: {row['Modalidad']}\n"
+            f"Matrícula: {row['Matrícula']} alumnos\n"
+            f"Avance físico: {row['Avance Fisico']}\n"
+            f"Observaciones: {row['Observaciones']}\n"
             f"Latitud / Longitud: {row['Latitud']} / {row['Longitud']}"
         )
         pdf.multi_cell(0, 6, contenido)
