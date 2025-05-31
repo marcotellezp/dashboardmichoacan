@@ -1,7 +1,7 @@
 
 import streamlit as st
 import pandas as pd
-from fpdf import FPDF
+import streamlit.components.v1 as components
 
 st.set_page_config(page_title="Obras por Municipio", layout="wide")
 
@@ -57,23 +57,25 @@ st.markdown("**Desglose por programa:**")
 for linea in desglose_text:
     st.write(linea)
 
-# Mostrar obras en pantalla
+# Mostrar obras con estilo intercalado
 st.subheader(f"Obras en el municipio de {municipio}")
 for i, row in df_mun.iterrows():
+    bg_color = "#f0f2f6" if i % 2 == 0 else "#ffffff"
     monto_individual = row[col_monto] if col_monto in row else 0
-    st.markdown(f"""
-**Nombre del Plantel:** {row['Nombre del Plantel']}  
-**CCT:** {row['CCT']}  
-**Localidad:** {row['Localidad']}  
-**Programa:** {row['Programa']}  
-**Inversión estimada:** ${monto_individual:,.2f}  
-**Descripción de la obra:** {row['Descripción de la obra']}  
-**Tipo:** {row['Tipo']}  
-**Nivel:** {row['Nivel']}  
-**Modalidad:** {row['Modalidad']}  
-**Matrícula:** {row['Matrícula']} alumnos  
-**Avance físico:** {row['Avance Fisico']}  
-**Observaciones:** {row['Observaciones']}  
-**Latitud / Longitud:** {row['Latitud']} / {row['Longitud']}
----
-""", unsafe_allow_html=True)
+    components.html(f"""
+        <div style="background-color:{bg_color}; padding:15px; border-radius:10px; margin-bottom:10px; font-family:sans-serif;">
+            <b>Nombre del Plantel:</b> {row['Nombre del Plantel']}<br>
+            <b>CCT:</b> {row['CCT']}<br>
+            <b>Localidad:</b> {row['Localidad']}<br>
+            <b>Programa:</b> {row['Programa']}<br>
+            <b>Inversión estimada:</b> ${monto_individual:,.2f}<br>
+            <b>Descripción de la obra:</b> {row['Descripción de la obra']}<br>
+            <b>Tipo:</b> {row['Tipo']}<br>
+            <b>Nivel:</b> {row['Nivel']}<br>
+            <b>Modalidad:</b> {row['Modalidad']}<br>
+            <b>Matrícula:</b> {row['Matrícula']} alumnos<br>
+            <b>Avance físico:</b> {row['Avance Fisico']}<br>
+            <b>Observaciones:</b> {row['Observaciones']}<br>
+            <b>Latitud / Longitud:</b> {row['Latitud']} / {row['Longitud']}
+        </div>
+    """, height=400)
