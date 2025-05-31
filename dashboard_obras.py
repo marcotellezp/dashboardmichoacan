@@ -57,47 +57,23 @@ st.markdown("**Desglose por programa:**")
 for linea in desglose_text:
     st.write(linea)
 
-# PDF generator
-def generar_pdf(data, municipio, desglose_text, total_inversion):
-    pdf = FPDF()
-    pdf.add_page()
-    pdf.set_font("Arial", "B", 16)
-    pdf.cell(200, 10, f"Resumen de {municipio}", ln=True, align='L')
-
-    pdf.set_font("Arial", "", 12)
-    pdf.cell(200, 8, f"Número de obras: {data.shape[0]}", ln=True)
-    pdf.cell(200, 8, f"Total de inversión: ${total_inversion:,.2f}", ln=True)
-    pdf.cell(200, 8, "Desglose por programa:", ln=True)
-    for linea in desglose_text:
-        pdf.cell(200, 8, linea, ln=True)
-
-    pdf.ln(5)
-    pdf.set_font("Arial", "B", 14)
-    pdf.cell(200, 10, f"Reporte de obras - {municipio}", ln=True, align='C')
-
-    pdf.set_font("Arial", "", 10)
-    for i, row in data.iterrows():
-        monto_individual = row[col_monto] if col_monto in row else 0
-        contenido = (
-            f"Nombre del Plantel: {row['Nombre del Plantel']}\n"
-            f"CCT: {row['CCT']}\n"
-            f"Localidad: {row['Localidad']}\n"
-            f"Programa: {row['Programa']}\n"
-            f"Inversión estimada: ${monto_individual:,.2f}\n"
-            f"Descripción de la obra: {row['Descripción de la obra']}\n"
-            f"Tipo: {row['Tipo']}\n"
-            f"Nivel: {row['Nivel']}\n"
-            f"Modalidad: {row['Modalidad']}\n"
-            f"Matrícula: {row['Matrícula']} alumnos\n"
-            f"Avance físico: {row['Avance Fisico']}\n"
-            f"Observaciones: {row['Observaciones']}\n"
-            f"Latitud / Longitud: {row['Latitud']} / {row['Longitud']}"
-        )
-        pdf.multi_cell(0, 6, contenido)
-        pdf.ln(2)
-
-    return pdf.output(dest='S').encode('latin1')
-
-if st.button("📥 Descargar PDF"):
-    pdf_bytes = generar_pdf(df_mun, municipio, desglose_text, total_inversion)
-    st.download_button("Descargar reporte", data=pdf_bytes, file_name=f"reporte_{municipio}.pdf", mime="application/pdf")
+# Mostrar obras en pantalla
+st.subheader(f"Obras en el municipio de {municipio}")
+for i, row in df_mun.iterrows():
+    monto_individual = row[col_monto] if col_monto in row else 0
+    st.markdown(f"""
+**Nombre del Plantel:** {row['Nombre del Plantel']}  
+**CCT:** {row['CCT']}  
+**Localidad:** {row['Localidad']}  
+**Programa:** {row['Programa']}  
+**Inversión estimada:** ${monto_individual:,.2f}  
+**Descripción de la obra:** {row['Descripción de la obra']}  
+**Tipo:** {row['Tipo']}  
+**Nivel:** {row['Nivel']}  
+**Modalidad:** {row['Modalidad']}  
+**Matrícula:** {row['Matrícula']} alumnos  
+**Avance físico:** {row['Avance Fisico']}  
+**Observaciones:** {row['Observaciones']}  
+**Latitud / Longitud:** {row['Latitud']} / {row['Longitud']}
+---
+""", unsafe_allow_html=True)
